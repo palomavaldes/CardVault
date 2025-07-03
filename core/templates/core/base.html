@@ -1,0 +1,90 @@
+<!doctype html>
+
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <script src="https://cdn.tailwindcss.com"></script> 
+
+        <title>{% block title %}{% endblock %} | CardVault</title>
+        <style>
+            .st0 {
+                fill: #6B7280; 
+            }
+            .st0:hover {
+                fill: #4B5563; 
+            }
+        </style>
+    </head>
+
+    <body class="flex flex-col min-h-screen"> 
+
+        <nav class="py-6 px-6 flex justify-between items-center border-b border-gray-200">
+            <a href="/" class="text-2xl font-semibold">CardVault</a>
+
+            <div class="space-x-6">
+                <a href="{% url 'item:new' %}" class="text-lg font-semibold hover:text-gray-500">Sell item</a>
+                <a href="{% url 'item:items' %}" class="text-lg font-semibold hover:text-gray-500">Browse</a>
+
+                {% if request.user.is_authenticated %}
+                    <a href="{% url 'conversation:inbox' %}" class="px-6 py-3 text-lg font-semibold bg-indigo-500 text-white rounded-xl hover:bg-indigo-700">Inbox</a>
+                    <a href="{% url 'dashboard:index' %}" class="px-6 py-3 text-lg font-semibold bg-gray-500 text-white rounded-xl hover:bg-gray-700">Dashboard</a>
+                {% else %}
+                    <a href="{% url 'core:signup' %}" class="px-6 py-3 text-lg font-semibold bg-indigo-500 text-white rounded-xl hover:bg-indigo-700">Sign up</a>
+                    <a href="{% url 'core:login' %}" class="px-6 py-3 text-lg font-semibold bg-gray-500 text-white rounded-xl hover:bg-gray-700">Login</a>
+                {% endif %}
+            </div>
+
+            <a href="{% url 'cart:cart_detail' %}">
+                <svg class="w-7" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+                    width="40px" height="36px" viewBox="0 0 40 36" style="enable-background:new 0 0 40 36" xml:space="preserve">
+                    <g id="Page-1_4_" sketch:type="MSPage">
+                        <g id="Desktop_4_" transform="translate(-84.000000, -410.000000)" sketch:type="MSArtboardGroup">
+                            <path id="Cart" sketch:type="MSShapeGroup" class="st0" d="M94.5,434.6h24.8l4.7-15.7H92.2l-1.3-8.9H84v4.8h3.1l3.7,27.8h0.1
+                                c0,1.9,1.8,3.4,3.9,3.4c2.2,0,3.9-1.5,3.9-3.4h12.8c0,1.9,1.8,3.4,3.9,3.4c2.2,0,3.9-1.5,3.9-3.4h1.7v-3.9l-25.8-0.1L94.5,434.6"
+                                />
+                        </g>
+                    </g>
+                </svg>
+            </a>
+        </nav>
+
+        <main class="flex-grow"> 
+            <div class="px-6 py-6">
+                {% block content %}
+                {% endblock %}
+            </div>
+        </main>
+
+        <footer class="py-4 px-6 flex justify-between bg-gray-800">
+            <div class="w-2/3 pr-10">
+                <h3 class="mb-5 font-semibold text-gray-400">About</h3>
+
+                <p class="text-lg text-gray-500">Made by Paloma Valdes June 2025</p>
+            </div>
+
+            <div class="w-1/3">
+                <h3 class="mb-5 font-semibold text-gray-400">Menu</h3>
+                
+                <ul class="space-y-2">
+                    <li>
+                        <a href="#" class="text-lg text-indigo-500 hover:text-indigo-700">About</a>
+                    </li>
+
+                    <li>
+                        <a href="{% url 'core:contact' %}" class="text-lg text-indigo-500 hover:text-indigo-700">Contact</a>
+                    </li>
+
+                    <li>
+                        <a href="#" class="text-lg text-indigo-500 hover:text-indigo-700">Privacy policy</a>
+                    </li>
+
+                    <li>
+                        <a href="#" class="text-lg text-indigo-500 hover:text-indigo-700">Terms of use</a>
+                    </li>
+                </ul>
+            </div>
+        </footer>
+    </body>
+</html>
