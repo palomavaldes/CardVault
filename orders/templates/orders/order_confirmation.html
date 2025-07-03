@@ -1,0 +1,26 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Order Confirmation{% endblock %}
+
+{% block content %}
+<div class="w-1/2 my-6 mx-auto p-6 bg-gray-100 rounded-xl">
+    <h2 class="mb-4">Your order has been placed! Below are the details: </h2>
+    <h3>Order ID: #{{order.id}}</h3>
+    <ul>
+    {%for item in order.items.all%}
+    <li>
+        <strong>{{item.quantity}} x {{item.item.name}}</strong>
+        <br>
+        <span>${{item.price}}</span>
+        <br>
+        <span class="font-semibold text-indigo-700">Seller: {{item.item.created_by}}</span>
+
+
+    </li>
+    {%endfor%}
+    <ul>
+
+    <p class="mt-4 mb-4"><strong>Final total (with tax): ${{order.final_price}}</strong></p>
+    <p class="text-red-700">Contact seller(s) for payment options and delivery.</p>
+</div>
+{% endblock %}
