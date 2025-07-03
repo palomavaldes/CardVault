@@ -1,0 +1,95 @@
+{% extends 'core/base.html' %}
+
+{% block title %}{{ item.name }}{% endblock %}
+
+{% block content %}
+<div class="grid grid-cols-5 gap-6">
+    <div class="col-span-2 col-start-2">
+        <img src="{{ item.image.url }}" class="rounded-xl">
+    </div>
+
+    <div class="col-span-1 p-6 bg-gray-100 rounded-xl">
+        <h1 class="mb-6 text-3xl"> {{item.name}}</h1>
+        <p class="text-gray-700"><strong>Price: ${{item.price}}</strong></p>
+        <p class="text-gray-700"><strong>Seller: {{item.created_by.username}}</strong></p>
+
+        {% if item.description %}
+            <p class="text-gray-700">
+                <strong class="text-gray-700">
+                    Description:
+                </strong> <br>
+                    {{item.description}}
+            </p>
+        {% endif %}
+
+        {% if request.user == item.created_by %}
+            <div class="mt-6 p-6 bg-white rounded-xl">
+                <p>This is your item.</p>
+                <a href="{% url 'item:edit' item.id %}" class="inline-block mt-6 px-6 py-3 text-lg font-semibold bg-yellow-500 hover:bg-yellow-700 text-white rounded-xl">Edit</a>
+                <a href="{% url 'item:delete' item.id %}" class="inline-block mt-6 px-6 py-3 text-lg font-semibold bg-red-500 hover:bg-red-700 text-white rounded-xl">Delete item</a>
+            </div>
+        {% else %}
+                <a href="{% url 'conversation:new' item.id %}" class="inline-block mt-6 px-6 py-3 text-lg font-semibold bg-indigo-500 text-white rounded-xl hover:bg-indigo-700">Contact seller</a>
+                <form action="{% url 'cart:cart_add' item.pk %}" method="post" id="add-to-cart-form">
+                {% csrf_token %}
+                <button type="submit" class="inline-block mt-6 mb-6 px-6 py-3 text-lg font-semibold bg-indigo-500 text-white rounded-xl hover:bg-indigo-700">Add to cart</button>
+                <p id="message"></p>
+                </form>
+        {% endif %}
+
+        
+    </div>
+</div>
+
+<script>
+    document.getElementById('add-to-cart-form').addEventListener("submit", function(event){
+        event.preventDefault();
+
+        const form = event.target;
+        const url = form.action;
+        const formData = new FormData(form);
+
+        fetch(url, {
+            method:'POST',
+            headers:{
+                'X-CSRFToken':formData.get('csrfmiddlewaretoken')
+            },
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data=>{
+            const messageElement = document.getElementById('message');
+            if (data.success){
+                messageElement.textContent = data.message;
+            }else{
+                message.textContent = "Failed to add to cart";
+            }
+        })
+        .catch(error=>{
+            console.error("Error", error);
+        })
+    })
+
+</script>
+
+<div class="mt-6 px-6 py-12 bg-gray-100 rounded-xl">
+        <h2 class="mb-12 text-2xl text-center">Related items</h2>
+
+        <div class="grid grid-cols-6 gap-5">
+            {% for item in related_items %}
+                <div style="display: grid; grid-template-columns: repeat(1, 1fr); row-gap: 30px; gap: 10px;">
+                    <a href="{% url 'item:detail' item.id %}">
+                        <div>
+                            <img src="{{ item.image.url }}" class="rounded-t-xl" style="object-fit: cover; height: 300px; width: 650px;">
+                        </div>
+
+                        <div class="p-5 bg-white rounded-b-xl">
+                            <h2 class="text-m">{{ item.name }}</h2>
+                            <p class="text-gray-500"> ${{ item.price }}</p>
+                        </div>
+                    </a>
+                </div>
+            {% endfor %}
+        </div>
+</div>
+{% endblock %}
